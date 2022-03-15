@@ -23,14 +23,14 @@ public class Launcher {
         try {
             //Узнаём абсолютный путь каталога
             String dir = new File(".").getAbsoluteFile().getParentFile().getAbsolutePath() + System.getProperty("file.separator");
-            
+
             String s1 = dir + "portable_data.xml"; //имя XML-файла
             String s2 = dir + "portable_data.prop"; //имя Prop-файла
             File fileXML = new File(s1); //нужна для доступа к portable_data.xml
             File fileProp = new File(s2); //нужна для доступа к portable_data.prop
             String currentDate = new Date().toString(); //дата записи
             Properties properties = new Properties(); //хранит свойства            
-            
+
             if ((fileXML.exists() == false) || (fileProp.exists() == false)) {//если файл(ы) отсутствуют
                 //случайные данные для файла
                 for (int i = 0; i < matrixRow; i++) {
@@ -41,12 +41,12 @@ public class Launcher {
                 }
                 //сохранение результата в файлы
                 properties.storeToXML(new FileOutputStream(fileXML), currentDate);
-                properties.store(new FileOutputStream(fileProp), currentDate);                
+                properties.store(new FileOutputStream(fileProp), currentDate);
             } else {//если файл есть, то загружаем его данные
                 properties.loadFromXML(new FileInputStream(fileXML));
                 //properties.load(new FileInputStream(fileProp));            
             }
-            
+
             System.out.println("Matrix:");
             //считывание из файла
             for (int i = 0; i < matrixRow; i++) {
@@ -57,30 +57,26 @@ public class Launcher {
                 }
                 System.out.print("\n");
             }
-            
+
             //моё решение
-            int min = matrix[0][0], mini = 0, minj = 0;
-            int max = matrix[0][0], maxi = 0, maxj = 0;
-            
-            for (int i = 0; i < matrixRow; i++) {
-                for (int j = 0; j < matrixColumn; j++) {
-                    temp = matrix[i][j];
-                    if (temp > max) {
-                        max = temp;
-                        maxi = i;
-                        maxj = j;
-                    }
-                    if (temp < min) {
-                        min = temp;
-                        mini = i;
-                        minj = j;
-                    }
+            int max = matrix[1][0], maxi = 1, maxj = 0; // вторая строка макс элемент
+
+            for (int j = 0; j < matrixColumn; j++) {
+                temp = matrix[1][j];
+                if (temp > max) {
+                    max = temp;
+                    maxj = j;
                 }
             }
-            temp = matrix[maxi][maxj];
-            matrix[maxi][maxj] = matrix[mini][minj];
-            matrix[mini][minj] = temp;
-            
+
+            if (matrix[maxi][maxj] > matrix[2][0]) {
+                temp = matrix[maxi][maxj];
+                matrix[maxi][maxj] = matrix[2][0];
+                matrix[2][0] = temp;
+            } else {
+                return;
+            }
+
             //сохраняем свойства
             for (int i = 0; i < matrixRow; i++) {
                 for (int j = 0; j < matrixColumn; j++) {
@@ -90,7 +86,7 @@ public class Launcher {
             //запись свойства
             properties.storeToXML(new FileOutputStream(fileXML), currentDate);
             properties.store(new FileOutputStream(fileProp), "<><><><><><><><>");
-            
+
             //считывание результата из файла
             System.out.println("New matrix:");
             for (int i = 0; i < matrixRow; i++) {
